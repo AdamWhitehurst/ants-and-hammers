@@ -1,5 +1,23 @@
 const fs = require("fs");
 const ndjson = require("ndjson");
+const express = require("express");
+const app = express();
+const http = require("http").Server(app);
+var io = require("socket.io")(http);
+const portNum = 1338;
+
+// Set up Express
+
+http.listen(portNum, () => console.log("Listening on ++1337 port!"));
+app.get("/getAnt", getAnt);
+app.get("/getHam", getHam);
+app.get("/sendImageData", gotData);
+app.use("/", express.static("public"));
+
+// Set up Socket.io
+io.on("connection", socket => {
+  socket.on("send image data", gotData);
+});
 
 // Create filestream interfaces
 const anterFace = [];
@@ -27,13 +45,6 @@ function getHam(req, resp) {
   resp.send(hamterFace[Math.floor(Math.random() * hamterFace.length)]);
 }
 
-// Set up Express
-const express = require("express");
-const e = express();
-const portNum = 1338;
-
-e.listen(portNum, () => console.log("Listening on ++1337 port!"));
-e.get("/getAnt", getAnt);
-e.get("/getHam", getHam);
-
-e.use("/", express.static("public"));
+function gotData(data) {
+  console.log(data);
+}
