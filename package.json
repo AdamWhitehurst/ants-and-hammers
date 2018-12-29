@@ -1,0 +1,16 @@
+{
+  "name": "quick-draw",
+  "version": "0.0.1",
+  "description": "A project which experiments with Quick, Draw! dataset",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adam Whitehurst",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "ndjson": "^1.5.0"
+  }
+}
