@@ -1,23 +1,67 @@
 /// <reference path="./p5/p5.global-mode.d.ts" />
 
-// DOM Elements
+/**
+ * @type HTMLElement
+ */
 let inputTextElement;
+
+/**
+ * @type HTMLElement
+ */
 let inputButtonElement;
+
+/**
+ * @type HTMLElement
+ */
 let canvasElement;
 
-// p5 elements
+/**
+ * @type HTMLCanvasElement
+ */
 let canvas;
+
+/**
+ *   Each index of currAnt is a single pen stroke.
+ *   a stroke is a single line from pen down to pen up
+ *
+ *   NOTE: 'stroke' is called 'path'
+ *   because stroke() is a p5 function
+ *
+ *   Each path currAnt[pi] has two indexes:
+ *   [0] the x values for each vertex of the line
+ *   [1] the y values for each vertex of the line
+ *
+ *   Thus, a single vertex of a specific path is:
+ *
+ *   { x: ant.drawing[pi][0][i],
+ *
+ *     y: ant.drawing[pi][1][i] }
+ */
 let currAnt;
 
+/**
+ * @type RenderingContext
+ */
 let ctx;
 
-// DRAWING INDEXES
-let pi = 0; // Path index
-let li = 0; // Line (in a path) index
+/**
+ * Index of the current stroke path to draw
+ */
+let pi = 0;
+/**
+ * Index of the current line within a path to draw
+ */
+let li = 0;
+
+/**
+ * Previous X coordinate, to start the next line draw from
+ */
 let prevX;
+/**
+ * Previous Y coordinate, to start the next line draw from
+ */
 let prevY;
 
-// called by p5
 function setup() {
   canvas = createCanvas(510, 510);
   canvas.parent("sketch-holder");
@@ -36,18 +80,6 @@ function setup() {
   init();
 }
 
-function init() {
-  clear();
-  background(24);
-  noFill();
-  stroke(255);
-  strokeWeight(2);
-  translate(width / 2, height / 2);
-
-  requestDoodle();
-}
-
-// called by p5
 function draw() {
   if (currAnt) {
     const x = currAnt[pi][0][li] + 127;
@@ -64,6 +96,21 @@ function draw() {
 
     checkBounds();
   }
+}
+
+/**
+ * Initializes the canvas element to blank
+ * then requests a new doodle from server
+ */
+function init() {
+  clear();
+  background(24);
+  noFill();
+  stroke(255);
+  strokeWeight(2);
+  translate(width / 2, height / 2);
+
+  requestDoodle();
 }
 
 function submitForm(data) {
@@ -104,22 +151,4 @@ function requestDoodle() {
 
 function gotDoodle(ant) {
   currAnt = ant;
-  /*
-   *   ANT.DRAWING[] FORMAT:
-   *   Each index in ant.drawing[] is a single stroke
-   *   a stroke is a single line from pen down to pen up
-   *   NOTE: 'stroke' is called 'path'
-   *   because stroke() is a p5 function
-   *
-   *   Each path in ant.drawing[][] has two indexes:
-   *   [0] the x values for each vertex of the line
-   *   [1] the y values for each vertex of the line
-   *
-   *   Thus, a single vertex of a specific path is:
-   *   {
-   *     x: ant.drawing[path][0][i],
-   *     y: ant.drawing[path][1][i]
-   *   }
-   *
-   */
 }
