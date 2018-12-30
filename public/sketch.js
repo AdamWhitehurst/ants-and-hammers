@@ -83,21 +83,21 @@ function setup() {
 }
 
 function draw() {
-  if (currDoodle) {
-    const x = currDoodle[pi][0][li] + 127;
-    const y = currDoodle[pi][1][li] + 127;
+  if (!currDoodle) return;
 
-    if (prevX) {
-      line(prevX, prevY, x, y);
-    }
+  const x = currDoodle[pi][0][li] + 127;
+  const y = currDoodle[pi][1][li] + 127;
 
-    li++;
-
-    prevX = x;
-    prevY = y;
-
-    checkBounds();
+  if (prevX) {
+    line(prevX, prevY, x, y);
   }
+
+  li++;
+
+  prevX = x;
+  prevY = y;
+
+  checkBounds();
 }
 
 /**
