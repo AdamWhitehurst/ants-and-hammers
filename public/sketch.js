@@ -21,23 +21,23 @@ let canvasElement;
 let canvas;
 
 /**
- *   Each index of currAnt is a single pen stroke.
+ *   Each index of currDoodle is a single pen stroke.
  *   a stroke is a single line from pen down to pen up
  *
  *   NOTE: 'stroke' is called 'path'
  *   because stroke() is a p5 function
  *
- *   Each path currAnt[pi] has two indexes:
+ *   Each path currDoodle[pi] has two indexes:
  *   [0] the x values for each vertex of the line
  *   [1] the y values for each vertex of the line
  *
  *   Thus, a single vertex of a specific path is:
  *
- *   { x: ant.drawing[pi][0][i],
+ *   { x: currDoodle[pi][0][i],
  *
- *     y: ant.drawing[pi][1][i] }
+ *     y: currDoodle[pi][1][i] }
  */
-let currAnt;
+let currDoodle;
 
 /**
  * @type RenderingContext
@@ -54,11 +54,13 @@ let pi = 0;
 let li = 0;
 
 /**
- * Previous X coordinate, to start the next line draw from
+ * Previous X coordinate of doodle line
+ * position to start the next line draw
  */
 let prevX;
 /**
- * Previous Y coordinate, to start the next line draw from
+ * Previous Y coordinate of doodle line
+ * position to start the next line draw
  */
 let prevY;
 
@@ -81,9 +83,9 @@ function setup() {
 }
 
 function draw() {
-  if (currAnt) {
-    const x = currAnt[pi][0][li] + 127;
-    const y = currAnt[pi][1][li] + 127;
+  if (currDoodle) {
+    const x = currDoodle[pi][0][li] + 127;
+    const y = currDoodle[pi][1][li] + 127;
 
     if (prevX) {
       line(prevX, prevY, x, y);
@@ -119,36 +121,57 @@ function submitForm(data) {
   init();
 }
 
+/**
+ * Checks whether the next line and path
+ * index are outside the bounds of the doodle
+ */
 function checkBounds() {
-  if (li >= currAnt[pi][0].length) {
+  if (li >= currDoodle[pi][0].length) {
     resetLine();
-
-    if (pi >= currAnt.length) {
+    pi++;
+    if (pi >= currDoodle.length) {
       reset();
     }
   }
 }
 
+/**
+ * Resets the line index and previous coordinates
+ */
 function resetLine() {
-  pi++;
   li = 0;
   prevX = null;
   prevY = null;
 }
 
+/**
+ * Resets the path index and clears the current doodle
+ */
 function reset() {
   pi = 0;
-  currAnt = null;
+  currDoodle = null;
 }
 
+/**
+ * Sends passed image data to server
+ * @param {ImageData} data
+ */
 function sendDoodleData(data) {
   socket.emit("send image data", data);
 }
 
+/**
+ * Requests a new doodle from server
+ */
 function requestDoodle() {
   loadJSON("/getTraining", gotDoodle);
 }
 
-function gotDoodle(ant) {
-  currAnt = ant;
+/**
+ * Called when recieved doodle data from server,
+ * sets currDoodle to new doodle data
+ * @param {number[]} doodle
+ */
+function gotDoodle(doodle) {
+  currDoodle = doodle;
 }
