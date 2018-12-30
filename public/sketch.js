@@ -44,7 +44,7 @@ function init() {
   strokeWeight(2);
   translate(width / 2, height / 2);
 
-  retrieveAnt();
+  requestDoodle();
 }
 
 // called by p5
@@ -68,7 +68,7 @@ function draw() {
 
 function submitForm(data) {
   data.preventDefault();
-  sendImageData(ctx.getImageData(0, 0, 510, 510).data);
+  sendDoodleData(ctx.getImageData(0, 0, 510, 510).data);
   init();
 }
 
@@ -94,16 +94,16 @@ function reset() {
   currAnt = null;
 }
 
-function sendImageData(data) {
+function sendDoodleData(data) {
   socket.emit("send image data", data);
 }
 
-function retrieveAnt() {
-  loadJSON("/getAnt", gotAnt);
+function requestDoodle() {
+  loadJSON("/getTraining", gotDoodle);
 }
 
-function gotAnt(ant) {
-  currAnt = ant.drawing;
+function gotDoodle(ant) {
+  currAnt = ant;
   /*
    *   ANT.DRAWING[] FORMAT:
    *   Each index in ant.drawing[] is a single stroke
