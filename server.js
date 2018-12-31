@@ -4,7 +4,7 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const fs = require("fs");
 const ndjson = require("ndjson");
-const DoodleIdentifier = require("./DoodleIdentifier");
+const DoodleIdentifier = require("./doodle-identifier.js");
 
 const did = new DoodleIdentifier();
 /**
