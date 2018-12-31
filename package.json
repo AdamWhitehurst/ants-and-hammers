@@ -10,8 +10,12 @@
   "author": "Adam Whitehurst",
   "license": "ISC",
   "dependencies": {
+    "@tensorflow/tfjs": "^0.14.1",
+    "@tensorflow/tfjs-node": "^0.2.1",
     "express": "^4.16.4",
+    "install": "^0.12.2",
     "ndjson": "^1.5.0",
+    "npm": "^6.5.0",
     "socket.io": "^2.2.0"
   }
 }

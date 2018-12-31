@@ -4,7 +4,9 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const fs = require("fs");
 const ndjson = require("ndjson");
+const DoodleIdentifier = require("./DoodleIdentifier");
 
+const did = new DoodleIdentifier();
 /**
  * Websocket port to use
  */
@@ -60,8 +62,8 @@ async function initHTTPServer() {
 
   // Set up Socket.io
   io.on("connection", socket => {
-    socket.on("send image data", data => {
-      gotDoodleData(data, socket);
+    socket.on("send image data", dData => {
+      gotDoodleData(dData, socket);
     });
   });
 }
@@ -162,18 +164,17 @@ function getDoodle(doodleType, testing) {
     ? randomInteger(trainingBounds[doodleType], doodleArray[doodleType].length)
     : randomInteger(0, trainingBounds[doodleType]);
 
-  return doodleArray[doodleType][randIndex];
+  return { dType: doodleType, doodle: doodleArray[doodleType][randIndex] };
 }
 
 /**
  * Called when the server recieves Doodle Image Data
  * from a socket
- * @param {IDK} data
- * @param {LOL} socket
+ * @param {{imageData: ImageData, dType: number}} dData
+ * @param {any} socket
  */
-function gotDoodleData(data, socket) {
-  console.log("Socket Type:", typeof socket);
-  console.log("Data Type: ", typeof data);
+function gotDoodleData(dData, socket) {
+  did.recieveImageData(dData);
 }
 
 /**

@@ -65,7 +65,7 @@ let prevX;
 let prevY;
 
 function setup() {
-  canvas = createCanvas(510, 510);
+  canvas = createCanvas(255, 255);
   canvas.parent("sketch-holder");
 
   inputTextElement = document.getElementById("textInput");
@@ -85,8 +85,8 @@ function setup() {
 function draw() {
   if (!currDoodle) return;
 
-  const x = currDoodle[pi][0][li] + 127;
-  const y = currDoodle[pi][1][li] + 127;
+  const x = currDoodle[pi][0][li];
+  const y = currDoodle[pi][1][li];
 
   if (prevX) {
     line(prevX, prevY, x, y);
@@ -117,7 +117,7 @@ function init() {
 
 function submitForm(data) {
   data.preventDefault();
-  sendDoodleData(ctx.getImageData(0, 0, 510, 510).data);
+  sendDoodleData(ctx.getImageData(0, 0, 255, 255).data);
   init();
 }
 
@@ -154,10 +154,15 @@ function reset() {
 
 /**
  * Sends passed image data to server
- * @param {ImageData} data
+ * @param {ImageData} iData
  */
-function sendDoodleData(data) {
-  socket.emit("send image data", data);
+function sendDoodleData(iData) {
+  let imageData = [];
+  for (let i = 0; i < iData.length; i += 4) {
+    imageData.push(iData[i]);
+  }
+  console.log(imageData.length);
+  socket.emit("send image data", { imageData: imageData, dType: currType });
 }
 
 /**
@@ -170,8 +175,9 @@ function requestDoodle() {
 /**
  * Called when recieved doodle data from server,
  * sets currDoodle to new doodle data
- * @param {number[]} doodle
+ * @param {{dType: number, doodle: number[]}} dData
  */
-function gotDoodle(doodle) {
-  currDoodle = doodle;
+function gotDoodle(dData) {
+  currDoodle = dData.doodle;
+  currType = dData.dType;
 }
